@@ -1,0 +1,25 @@
+.uploadOut{
+  width: 280px;
+  height: 150px;
+  border-radius: .03rem;
+  border: 2px dashed rgb(121, 119, 119);
+  // margin-left: 10px;
+  &.showImg{
+    border-style: solid;
+    position: relative;
+    .imgResult{
+      width: 100%;
+      height: 100%;
+    }
+    .delBtn{
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: translate(24%, -50%);
+    }
+  }
+  &.ctrl{
+    border-style: dashed;
+    margin-left: 10px;
+  }
+}
