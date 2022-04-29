@@ -17,7 +17,7 @@ export default ({ mode }) => {
         '/cat_website': 'http://10.172.188.117:8038'
         // '/packer': 'http://test-packer.avalongames.com'
       },
-      open: `/SDKmanage?iam_url=${iamUrlValue}&instance_id=${instanceId}`
+      open: `/websitegm?iam_url=${iamUrlValue}&instance_id=${instanceId}`
     },
     optimizeDeps: {
       include: ['avalon-iam-util-client', 'avalon-common-util-global', 'avalon-iam-util-global', 'avalon-antd-util-client']

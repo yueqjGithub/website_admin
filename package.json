@@ -6,7 +6,7 @@
     "dev:test": "vite -m test",
     "build": "vite build",
     "dev": "vite build",
-    "release": "vite build",
+    "release": "vite build -m inettest",
     "release:pubcn": "vite build -m pubcn",
     "serve": "vite preview"
   },
