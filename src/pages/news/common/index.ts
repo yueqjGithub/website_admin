@@ -25,5 +25,9 @@ export class NewsDataRow {
     // @ApiModelProperty(value = "是否启用")
     enable: boolean = true
 
+    createTime?: string
+
+    updateTime?: string
+
     titleImage?:string
 }

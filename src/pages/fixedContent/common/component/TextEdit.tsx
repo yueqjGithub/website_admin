@@ -66,7 +66,7 @@ const TextEdit = (props: Props) => {
                 <Form.Item wrapperCol={{ span: 24 }}>
                   <div className='full-width flex-row flex-jst-center'>
                     <Button type="primary" ghost onClick={() => add()} block style={{ maxWidth: '300px' }}>
-                      增加文字
+                      增加文字/链接
                     </Button>
                   </div>
                 </Form.Item>

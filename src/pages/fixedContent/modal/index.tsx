@@ -40,7 +40,6 @@ const EditModal = ({ target, state, eidtSuccess }: Props) => {
       const obj = new FixedContentType()
       form.setFieldsValue(obj)
       setCur(obj)
-      console.log(form.getFieldsValue())
     }
   }, [target])
   const setVal = ({ val, key }: { val: any, key: ContentEnum }) => {
@@ -107,14 +106,14 @@ const EditModal = ({ target, state, eidtSuccess }: Props) => {
             <Input disabled={!!target}></Input>
           </Form.Item>
           <Form.Item label='名称' name='name' rules={[{ required: true, message: '名称不能为空' }]}>
-            <Input disabled={!!target}></Input>
+            <Input></Input>
           </Form.Item>
         </Form>
         <Tabs defaultActiveKey='images' type='card'>
           <Tabs.TabPane tab='图片' key='images'>
             <BaseEdit<'images'> data={cur?.images as ContentGroup<'images'>} onChange={val => setVal({ val, key: 'images' })}></BaseEdit>
           </Tabs.TabPane>
-          <Tabs.TabPane tab='文字' key='text'>
+          <Tabs.TabPane tab='文字/链接' key='text'>
             <BaseEdit<'text'> data={cur?.text as ContentGroup<'text'>} onChange={val => setVal({ val, key: 'text' })}></BaseEdit>
           </Tabs.TabPane>
           <Tabs.TabPane tab='视频' key='video'>

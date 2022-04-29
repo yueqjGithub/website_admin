@@ -89,7 +89,7 @@ const ImgEdit = (props: Props) => {
                     </div>
                   </div>
                   <div className='pa-col-sm'></div>
-                  <Input placeholder='请输入附带链接' onChange={e => inputHandler(e, idx)}></Input>
+                  <Input placeholder='请输入附带链接' defaultValue={item.link} onChange={e => inputHandler(e, idx)}></Input>
                 </div>
               )
             })

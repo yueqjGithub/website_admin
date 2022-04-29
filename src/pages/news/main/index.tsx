@@ -124,7 +124,7 @@ const Main = ({ state, dispatch }: Props) => {
             { title: '标题', dataIndex: 'title', key: 'title' },
             {
               title: '封面图',
-              width: 300,
+              width: 200,
               dataIndex: 'titleImage',
               render: val => {
                 return val ? <img src={val} alt='封面图' style={{ width: '100%' }} /> : '无'
@@ -140,7 +140,18 @@ const Main = ({ state, dispatch }: Props) => {
             },
             { title: '副标题', dataIndex: 'subTitle', key: 'subTitle' },
             { title: '作者', dataIndex: 'author', sorter: (a: NewsDataRow, b: NewsDataRow) => a.author.localeCompare(b.author), key: 'author' },
-            { title: '上次修改', dataIndex: 'updateTime', render: val => <span>{dayjs(val).format('YYYY-MM-DD HH:mm:ss')}</span> },
+            {
+              title: '创建时间',
+              dataIndex: 'createTime',
+              render: val => <span>{dayjs(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+              sorter: (a: NewsDataRow, b: NewsDataRow) => a.createTime!.localeCompare(b.createTime!)
+            },
+            {
+              title: '上次修改',
+              dataIndex: 'updateTime',
+              render: val => <span>{dayjs(val).format('YYYY-MM-DD HH:mm:ss')}</span>,
+              sorter: (a: NewsDataRow, b: NewsDataRow) => a.updateTime!.localeCompare(b.updateTime!)
+            },
             {
               title: '是否启用',
               dataIndex: 'enable',
