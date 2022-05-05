@@ -67,6 +67,7 @@ const EditModal = ({ state, target, editSuccess }: Props) => {
     }
   }
   useEffect(() => {
+    console.log('当前是否为build：' + import.meta.env.PROD)
     if (target) {
       queryDetail()
     } else {
@@ -214,7 +215,7 @@ const EditModal = ({ state, target, editSuccess }: Props) => {
               onInit={(evt, editor) => {
                 editorRef.current = editor
               }}
-              tinymceScriptSrc={'/tinymce/tinymce/js/tinymce/tinymce.min.js'}
+              tinymceScriptSrc={'./tinymce/tinymce/js/tinymce/tinymce.min.js'}
               apiKey='sol86u4tcba6ch9iskfd77wwhr8a0xakxncfts9w6qsoddcw'
               initialValue={detail ? detail.content : ''}
               init={{

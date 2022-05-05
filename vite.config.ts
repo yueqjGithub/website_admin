@@ -10,7 +10,6 @@ export default ({ mode }) => {
   const iamUrlValue = encodeURIComponent(Buffer.from(encodeURIComponent(iamUrl)).toString('base64'))
   return defineConfig({
     base: './',
-    publicDir: '/websitegm',
     server: {
       host: '10.172.188.117',
       port: 20002,
