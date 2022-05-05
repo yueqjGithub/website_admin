@@ -219,7 +219,7 @@ const EditModal = ({ state, target, editSuccess }: Props) => {
               apiKey='sol86u4tcba6ch9iskfd77wwhr8a0xakxncfts9w6qsoddcw'
               initialValue={detail ? detail.content : ''}
               init={{
-                language_url: '/tinymce/tinymce/langs/zh_CN.js',
+                language_url: './tinymce/tinymce/langs/zh_CN.js',
                 language: 'zh_CN',
                 height: 500,
                 menubar: false,
