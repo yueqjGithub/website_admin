@@ -5,4 +5,4 @@
 
 
 ## 配置项说明
-VITE_IAMURL: iam地址
+VITE_IAMURL: iam地址。
