@@ -38,7 +38,7 @@ const videoEdit = (props: Props) => {
         }
       }).request
       if (res.status === 0) {
-        message.success('上传成功')
+        message.success('已成功上传至服务器')
         const newList = [...list]
         newList.push({
           data: res.data,
