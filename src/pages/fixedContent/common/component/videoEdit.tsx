@@ -32,7 +32,6 @@ const videoEdit = (props: Props) => {
         method: 'POST',
         data: fm,
         httpCustomConfig: {
-          timeout: 300000,
           headers: {
             actionName: encodeURIComponent('内容资源上传')
           }
