@@ -6,7 +6,7 @@ import { ApiIdForSDK } from './urls'
 import querystring from 'querystring'
 import { message } from 'antd'
 const http = axios.create({
-  timeout: 600000
+  timeout: 5 * 60 * 1000
 })
 
 http.interceptors.request.use(config => {
