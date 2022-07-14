@@ -44,6 +44,15 @@ export const routeConfig:RouteSingle[] = [
     icon: <FormatPainterOutlined />,
     childrens: [
       {
+        path: '/banners',
+        menuName: 'BANNER',
+        isMenu: true,
+        auth: false,
+        component: lazy(() => import('../pages/banners')),
+        parent: '/content',
+        dependGame: true
+      },
+      {
         path: '/news',
         menuName: '文章管理',
         isMenu: true,

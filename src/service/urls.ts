@@ -13,6 +13,7 @@ export type ApiIdForSDK =
 | 'news'
 | 'upload'
 | 'getfixedcontent'
+| 'getbanners'
 /** 通用api */
 export const apisForSDK: Apis<ApiIdForSDK> = [
   {
@@ -70,6 +71,16 @@ export const apisForSDK: Apis<ApiIdForSDK> = [
     id: 'getfixedcontent',
     url: '/cat_website/admin/fixedContent',
     name: '固定内容列表',
+    allowEmpty: true,
+    urlTranform: ({ url, state }) => {
+      const apiUrl = getApiUrl({ state })
+      return `${apiUrl}${url}`
+    }
+  },
+  {
+    id: 'getbanners',
+    url: '/cat_website/admin/banners',
+    name: 'banner列表',
     allowEmpty: true,
     urlTranform: ({ url, state }) => {
       const apiUrl = getApiUrl({ state })

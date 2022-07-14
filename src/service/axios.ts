@@ -190,8 +190,8 @@ const httpWithStore = async ({
     }
   } catch (e: any) {
     // console.log(e instanceof axios.Cancel)
-    if (cancelPayload !== null) {
-      cancelPayload[apiId] = null
+    if (e instanceof axios.Cancel) {
+      console.log(`${target.name}已取消`)
     }
     if (e.message) {
       message.error(e.message)

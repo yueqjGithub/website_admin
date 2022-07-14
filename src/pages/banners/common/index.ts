@@ -1,7 +1,9 @@
 export class BannerItem {
   bgImg?: string
   minHeight: string = '100vh'
-  elements: BannerElement[] = []
+  type: 1 | 2 = 1
+  status: boolean = true
+  elements: BannerElement<ElementsType>[] | string = []
 
   constructor (target?: BannerItem) {
     const keyMaps = Object.keys(BannerItem)
@@ -11,25 +13,27 @@ export class BannerItem {
       }
     }
   }
-
-  createByJson (target: string) {
-    const parseTarget = JSON.parse(target)
-    const result = new BannerItem(parseTarget)
-    return result
-  }
 }
 
-export class BannerElement {
-  type?: 'image' | 'text'
-  style: string = ''
-  src?: string
-  width: string = ''
-  height: string = ''
-  top: string = ''
-  left: string = ''
-  hoverScale: boolean = false
+type ElementsType = 'image' | 'text'
 
-  constructor (target: BannerElement) {
+export class BannerElement<T extends ElementsType> {
+  type?: T
+  style?: string = ''
+  src?: string
+  text?: string = '新增文字内容'
+  width?: number = 200
+  height?: number = 0
+  top: number = 50
+  left: number = 50
+  color?: string = '#000'
+  fontWight: boolean = true
+  fontSize?: number = 0.2
+  clickAble: boolean = false
+  hoverScale: boolean = false
+  href?: string
+
+  constructor (target?: BannerElement<T>) {
     const keyMaps = Object.keys(BannerElement)
     for (const k in target) {
       if (keyMaps.includes(k)) {
