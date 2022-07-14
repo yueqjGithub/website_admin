@@ -1,4 +1,4 @@
-import { Form, Input, InputNumber, message, Switch } from 'antd'
+import { Form, Input, InputNumber, message, Radio, Switch } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { BannerElement } from '../common'
 import { SketchPicker } from 'react-color'
@@ -11,6 +11,7 @@ type Props = {
   onDelete: Function
   submitData: (val: BannerElement<'image' | 'text'>, idx: number) => any
   isPre: boolean
+  editType: 1 | 2
 }
 
 type Positions = {
@@ -18,7 +19,7 @@ type Positions = {
   y: number
 }
 
-const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isPre }: Props) => {
+const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isPre, editType }: Props) => {
   const [cur, setCur] = useState<BannerElement<'image' | 'text'>>()
   const [form] = Form.useForm<BannerElement<'image' | 'text'>>()
   const [savePosition, setSavePosition] = useState<Positions>({ x: 0, y: 0 })
@@ -130,6 +131,17 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
         showEdit && !isPre && <div className={styles.editForm} draggable={false}>
           <Form form={form} colon={true} layout="vertical" size='small'>
             <div className="scroll-bar" style={{ maxHeight: 300 }}>
+              {
+                editType === 2 && (
+                  <Form.Item label="设备" name="device" initialValue={cur?.device || 'all'}>
+                    <Radio.Group onChange={val => setOptions('device', val)}>
+                      <Radio value='android'>Android</Radio>
+                      <Radio value='ios'>IOS</Radio>
+                      <Radio value='all'>全部</Radio>
+                    </Radio.Group>
+                  </Form.Item>
+                )
+              }
               {
                 cur?.type === 'image' && (
                   <>

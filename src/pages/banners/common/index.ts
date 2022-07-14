@@ -33,6 +33,7 @@ export class BannerElement<T extends ElementsType> {
   clickAble: boolean = false
   hoverScale: boolean = false
   href?: string
+  device: 'android' | 'ios' | 'all' = 'all'
 
   constructor (target?: BannerElement<T>) {
     const keyMaps = Object.keys(BannerElement)

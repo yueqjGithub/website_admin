@@ -1,6 +1,6 @@
 import { PlusOutlined } from '@ant-design/icons'
 import { Button, Divider, message, Radio, Spin, Switch } from 'antd'
-import React, { ChangeEvent, MutableRefObject, useContext, useEffect, useRef, useState } from 'react'
+import React, { ChangeEvent, MutableRefObject, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import { httpApi } from '../../../service/axios'
 import { Context } from '../../../store/context'
 import { BannerElement, BannerItem } from '../common'
@@ -160,6 +160,17 @@ const EditContainer = ({ target, onClose, editSuc }: Props) => {
       setLoading(false)
     }
   }
+  // 设备
+  const [deviceType, setDeviceType] = useState<'android' | 'ios' | 'all'>('all')
+  const filterEles = useMemo(() => {
+    if (deviceType === 'ios') {
+      return eleList.filter(item => item.device !== 'android')
+    }
+    if (deviceType === 'android') {
+      return eleList.filter(item => item.device !== 'ios')
+    }
+    return eleList
+  }, [deviceType, eleList])
   return (
     <div className={`${styles.editOut}`}>
       <input type="file" accept="image/*" ref={ref} style={{ display: 'none' }} onChange={e => uploadHandler(e)}/>
@@ -174,7 +185,7 @@ const EditContainer = ({ target, onClose, editSuc }: Props) => {
             bgUrl && <img src={bgUrl} alt="" className={styles.bgImg}/>
           }
           {
-            eleList.map((item, idx) =>
+            filterEles.map((item, idx) =>
               <Element
                 submitData={getDataHandler} idx={idx}
                 target={item} key={idx}
@@ -182,6 +193,7 @@ const EditContainer = ({ target, onClose, editSuc }: Props) => {
                 viewWidth={viewWidth}
                 onDelete={delEle}
                 isPre={isPre}
+                editType={type}
               ></Element>)
           }
         </div>
@@ -191,10 +203,27 @@ const EditContainer = ({ target, onClose, editSuc }: Props) => {
           </div>
           <div className={`${styles.toolContainer}`}>
             <div className={styles.label}>banner类型</div>
-            <Radio.Group defaultValue={type} onChange={e => setType(e.target.value)} disabled={isPre}>
+            <Radio.Group defaultValue={type} onChange={e => {
+              if (e.target.value === 1) {
+                setDeviceType('all')
+              }
+              setType(e.target.value)
+            }} disabled={isPre}>
               <Radio value={1}>PC</Radio>
               <Radio value={2}>MOBILE</Radio>
             </Radio.Group>
+            {
+              type === 2 && (
+                <>
+                  <div className="styles.label">设备</div>
+                  <Radio.Group defaultValue={deviceType} onChange={e => setDeviceType(e.target.value)} disabled={isPre}>
+                    <Radio value='android'>Android</Radio>
+                    <Radio value='ios'>IOS</Radio>
+                    <Radio value='all'>全部</Radio>
+                  </Radio.Group>
+                </>
+              )
+            }
             <div className={styles.label}>启用状态</div>
             <Switch onChange={val => setStatus(val)} checked={status}></Switch>
             <div className={styles.label}>背景图片设置</div>
