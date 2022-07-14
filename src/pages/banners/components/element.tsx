@@ -134,7 +134,7 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
               {
                 editType === 2 && (
                   <Form.Item label="设备" name="device" initialValue={cur?.device || 'all'}>
-                    <Radio.Group onChange={val => setOptions('device', val)}>
+                    <Radio.Group onChange={e => setOptions('device', e.target.value)}>
                       <Radio value='android'>Android</Radio>
                       <Radio value='ios'>IOS</Radio>
                       <Radio value='all'>全部</Radio>

@@ -163,13 +163,17 @@ const EditContainer = ({ target, onClose, editSuc }: Props) => {
   // 设备
   const [deviceType, setDeviceType] = useState<'android' | 'ios' | 'all'>('all')
   const filterEles = useMemo(() => {
+    const copy = [...eleList]
+    copy.forEach((item, idx) => {
+      item.id = idx
+    })
     if (deviceType === 'ios') {
-      return eleList.filter(item => item.device !== 'android')
+      return copy.filter(item => item.device !== 'android')
     }
     if (deviceType === 'android') {
-      return eleList.filter(item => item.device !== 'ios')
+      return copy.filter(item => item.device !== 'ios')
     }
-    return eleList
+    return copy
   }, [deviceType, eleList])
   return (
     <div className={`${styles.editOut}`}>
@@ -215,10 +219,10 @@ const EditContainer = ({ target, onClose, editSuc }: Props) => {
             {
               type === 2 && (
                 <>
-                  <div className="styles.label">设备</div>
+                  <div className="styles.label">元素过滤</div>
                   <Radio.Group defaultValue={deviceType} onChange={e => setDeviceType(e.target.value)} disabled={isPre}>
-                    <Radio value='android'>Android</Radio>
-                    <Radio value='ios'>IOS</Radio>
+                    <Radio value='android'>仅看Android</Radio>
+                    <Radio value='ios'>仅看IOS</Radio>
                     <Radio value='all'>全部</Radio>
                   </Radio.Group>
                 </>

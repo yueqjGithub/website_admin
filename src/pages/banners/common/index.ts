@@ -19,6 +19,7 @@ export class BannerItem {
 type ElementsType = 'image' | 'text'
 
 export class BannerElement<T extends ElementsType> {
+  id?: number | string
   type?: T
   style?: string = ''
   src?: string
