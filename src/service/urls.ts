@@ -14,6 +14,9 @@ export type ApiIdForSDK =
 | 'upload'
 | 'getfixedcontent'
 | 'getbanners'
+| 'addbanner'
+| 'updatebanner'
+| 'delbanner'
 /** 通用api */
 export const apisForSDK: Apis<ApiIdForSDK> = [
   {
@@ -81,6 +84,36 @@ export const apisForSDK: Apis<ApiIdForSDK> = [
     id: 'getbanners',
     url: '/cat_website/admin/banners',
     name: 'banner列表',
+    allowEmpty: true,
+    urlTranform: ({ url, state }) => {
+      const apiUrl = getApiUrl({ state })
+      return `${apiUrl}${url}`
+    }
+  },
+  {
+    id: 'addbanner',
+    url: '/cat_website/admin/banners/add',
+    name: '新增',
+    allowEmpty: true,
+    urlTranform: ({ url, state }) => {
+      const apiUrl = getApiUrl({ state })
+      return `${apiUrl}${url}`
+    }
+  },
+  {
+    id: 'updatebanner',
+    url: '/cat_website/admin/banners/update',
+    name: '更新',
+    allowEmpty: true,
+    urlTranform: ({ url, state }) => {
+      const apiUrl = getApiUrl({ state })
+      return `${apiUrl}${url}`
+    }
+  },
+  {
+    id: 'delbanner',
+    url: '/cat_website/admin/banners',
+    name: '删除',
     allowEmpty: true,
     urlTranform: ({ url, state }) => {
       const apiUrl = getApiUrl({ state })

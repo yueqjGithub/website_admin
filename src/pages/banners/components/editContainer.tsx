@@ -1,5 +1,5 @@
 import { PlusOutlined } from '@ant-design/icons'
-import { Button, Divider, message, Radio, Spin } from 'antd'
+import { Button, Divider, message, Radio, Spin, Switch } from 'antd'
 import React, { ChangeEvent, MutableRefObject, useContext, useEffect, useRef, useState } from 'react'
 import { httpApi } from '../../../service/axios'
 import { Context } from '../../../store/context'
@@ -9,25 +9,28 @@ import Element from './element'
 type Props = {
   target?: BannerItem
   onClose: Function
+  editSuc: Function
 }
 
-const EditContainer = ({ target, onClose }: Props) => {
+const EditContainer = ({ target, onClose, editSuc }: Props) => {
   const { state } = useContext(Context)
   const { currentGame } = state
-  const [bgUrl, setUrl] = useState<string | undefined>('http://corp-all-web-rs-test.oss-cn-hongkong.aliyuncs.com/gameWeb/Catapult/1657714625228index_bg1.jpg')
+  const [bgUrl, setUrl] = useState<string | undefined>()
   const [loading, setLoading] = useState<boolean>(false)
   const [viewHeight, setViewHeight] = useState<number>(1)
   const [viewWidth, setViewWidth] = useState<number>(1)
   const [eleList, setList] = useState<Array<BannerElement<'text' | 'image'>>>([])
+  const [status, setStatus] = useState<boolean>(true)
   const [isPre, setPre] = useState<boolean>(false)
   // banner类型1-pc,2-mobile
   const [type, setType] = useState<1 | 2>(1)
   // 编辑初始化
   useEffect(() => {
     if (target) {
-      setUrl(target.bgImg)
+      setUrl(target.imgUrl)
       setType(target.type)
       setList(JSON.parse(target.elements as string))
+      setStatus(target.status)
     }
   }, [])
   // 计算该屏宽高
@@ -39,7 +42,7 @@ const EditContainer = ({ target, onClose }: Props) => {
       cImg.onload = () => {
         setLoading(false)
         const w = type === 1 ? cImg.width : 414
-        const h = type === 1 ? cImg.height : (414 / w) * cImg.height
+        const h = type === 1 ? cImg.height : (414 / cImg.width) * cImg.height
         setViewHeight(h)
         setViewWidth(w)
       }
@@ -48,6 +51,10 @@ const EditContainer = ({ target, onClose }: Props) => {
   }, [bgUrl, type])
   // 增加元素
   const addEle = (type: 'text' | 'image', src?: string, width?: number, height?: number) => {
+    if (!bgUrl) {
+      message.warning('请先设置背景')
+      return false
+    }
     const ele = new BannerElement()
     ele.type = type
     if (src) {
@@ -121,7 +128,37 @@ const EditContainer = ({ target, onClose }: Props) => {
     const copy = [...eleList]
     copy.splice(idx, 1, val)
     setList(copy)
-    console.log(`${idx}已提交`)
+  }
+  // 提交
+  const submitHandlder = async () => {
+    const requestData: any = {
+      siteId: currentGame,
+      type: type,
+      status: status,
+      minHeight: viewHeight,
+      imgUrl: bgUrl,
+      elements: JSON.stringify(eleList)
+    }
+    if (target) {
+      requestData.id = target.id
+    }
+    try {
+      setLoading(true)
+      const { data: res } = await httpApi({
+        apiId: target ? 'updatebanner' : 'addbanner',
+        state,
+        method: 'POST',
+        data: requestData
+      }).request
+      if (res.status === 0) {
+        message.success('提交成功')
+        editSuc()
+      } else {
+        message.error(res.message)
+      }
+    } finally {
+      setLoading(false)
+    }
   }
   return (
     <div className={`${styles.editOut}`}>
@@ -132,7 +169,7 @@ const EditContainer = ({ target, onClose }: Props) => {
         </div>
       }
       <div className={`${styles.editContainer} flex-row flex-jst-center flex-ali-start scroll-bar`}>
-        <div className={`${styles.showView}`} style={{ width: type === 1 ? '100%' : '414px' }}>
+        <div className={`${styles.showView}`} style={{ width: type === 1 ? '100%' : '414px', overflow: type === 1 ? 'hidden' : 'visible' }}>
           {
             bgUrl && <img src={bgUrl} alt="" className={styles.bgImg}/>
           }
@@ -158,6 +195,8 @@ const EditContainer = ({ target, onClose }: Props) => {
               <Radio value={1}>PC</Radio>
               <Radio value={2}>MOBILE</Radio>
             </Radio.Group>
+            <div className={styles.label}>启用状态</div>
+            <Switch onChange={val => setStatus(val)} checked={status}></Switch>
             <div className={styles.label}>背景图片设置</div>
             <div className={`${styles.uploadOut} ${styles.ctrl} flex-col flex-jst-center flex-ali-center`}>
               <Button disabled={isPre} type='primary' shape='circle' icon={<PlusOutlined />} size='large' onClick={() => {
@@ -171,6 +210,10 @@ const EditContainer = ({ target, onClose }: Props) => {
             <div className="full-width flex-row flex-jst-start flex-ali-center">
               <Button disabled={isPre} size="small" type="primary" onClick={() => addEle('text')}>增加文字</Button>
               <Button disabled={isPre} size="small" className='ma-lf-05' type="primary" onClick={() => {
+                if (!bgUrl) {
+                  message.warning('请先设置背景')
+                  return false
+                }
                 setUploadType('ele')
                 ref.current!.click()
               }}>增加图片</Button>
@@ -178,11 +221,8 @@ const EditContainer = ({ target, onClose }: Props) => {
             <Divider></Divider>
             <div className="full-width flex-row flex-jst-start flex-ali-center">
               <Button size='small' onClick={() => onClose()} type="primary">离开</Button>
-              {/* <Button onClick={async () => {
-                await setChangeSymbol(!changeSymbol)
-                console.log(eleList)
-              }}>提交</Button> */}
               <Button type="primary" className='ma-lf-05' size="small" onClick={() => setPre(!isPre)}>{isPre ? '退出预览' : '预览'}</Button>
+              <Button size='small' className='ma-lf-05' type='primary' onClick={() => submitHandlder()}>提交</Button>
             </div>
           </div>
         </div>

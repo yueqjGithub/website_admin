@@ -1,4 +1,4 @@
-import { Form, Input, InputNumber, Switch } from 'antd'
+import { Form, Input, InputNumber, message, Switch } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { BannerElement } from '../common'
 import { SketchPicker } from 'react-color'
@@ -24,13 +24,14 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
   const [savePosition, setSavePosition] = useState<Positions>({ x: 0, y: 0 })
   useEffect(() => {
     setCur(target)
+    form.setFieldsValue(target)
   }, [target])
   const deleteHandler = (curIdx: number) => {
     onDelete(curIdx)
   }
   // 编辑区域
   const [showEdit, setEdit] = useState<boolean>(false)
-  const setOptions = (key: string, val: any) => {
+  const setOptions = (key: keyof BannerElement<'image' | 'text'>, val: any) => {
     const copy = { ...cur }
     copy[key] = val
     // setCur(copy as BannerElement<'image' | 'text'>)
@@ -42,7 +43,47 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
   //     submitData(cur!, idx)
   //   }
   // }, [changeSymbol])
-
+  const dragstart = (e:React.DragEvent<HTMLDivElement>):any => {
+    setEdit(false)
+    const start = {
+      x: e.clientX,
+      y: e.clientY
+    }
+    setSavePosition(start)
+  }
+  const dragend = (e:any):any => {
+    // e.target.parentNode
+    const x = e.clientX
+    const y = e.clientY
+    const xd = x - savePosition.x // distance
+    const yd = y - savePosition.y // distance
+    if (xd < 0 && xd < (e.target.parentNode.offsetLeft) * -1) {
+      message.warning('超出边界')
+      return false
+    }
+    // 右移超框
+    if (xd > 0 && xd > (viewWidth! - e.target.parentNode.offsetLeft - e.target.parentNode.offsetWidth)) {
+      message.warning('超出边界')
+      return false
+    }
+    // 上移超框
+    if (yd < 0 && yd < (e.target.parentNode.offsetTop) * -1) {
+      message.warning('超出边界')
+      return false
+    }
+    // 下移超框
+    if (yd > 0 && yd > (viewHeight! - e.target.parentNode.offsetTop - e.target.parentNode.offsetHeight)) {
+      message.warning('超出边界')
+      return false
+    }
+    const xp = xd / viewWidth! // percent
+    const yp = yd / viewHeight! // percent
+    const copy = { ...cur }
+    copy.left = parseFloat((cur!.left + (xp * 100)).toFixed(2))
+    copy.top = parseFloat((cur!.top + (yp * 100)).toFixed(2))
+    // form.setFieldsValue(copy)
+    submitData(copy as BannerElement<'image' | 'text'>, idx)
+  }
   return (
     <div
     className={styles.eleContainer}
@@ -50,52 +91,11 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
       left: `${cur?.left}%`,
       top: `${cur?.top}%`
     }}
-    draggable
-    onDragStart={e => {
-      const start = {
-        x: e.clientX,
-        y: e.clientY
-      }
-      setSavePosition(start)
-    }}
-    onDragEnd={e => {
-      const x = e.clientX
-      const y = e.clientY
-      const xd = x - savePosition.x // distance
-      const yd = y - savePosition.y // distance
-      if (xd < 0 && xd < (e.currentTarget.offsetLeft + e.currentTarget.offsetWidth) * -1) {
-        console.log('左移超框')
-        return false
-      }
-      // 右移超框
-      if (xd > 0 && xd > (viewWidth! - e.currentTarget.offsetLeft)) {
-        console.log('右移超框')
-        return false
-      }
-      // 上移超框
-      if (yd < 0 && yd < (e.currentTarget.offsetTop + e.currentTarget.offsetHeight) * -1) {
-        console.log('上移超框')
-        return false
-      }
-      // 下移超框
-      if (yd > 0 && yd > (viewHeight! - e.currentTarget.offsetTop)) {
-        console.log('下移超框')
-        return false
-      }
-      const xp = xd / viewWidth! // percent
-      const yp = yd / viewHeight! // percent
-      const copy = { ...cur }
-      copy.left = parseFloat((cur!.left + (xp * 100)).toFixed(2))
-      copy.top = parseFloat((cur!.top + (yp * 100)).toFixed(2))
-      form.setFieldsValue(copy)
-      submitData(copy as BannerElement<'image' | 'text'>, idx)
-    }}
     >
       {
         cur?.type === 'image'
           ? (
           <img
-          draggable
           src={cur.src}
           alt={cur.src}
           style={{
@@ -103,6 +103,10 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
             height: `${cur.height}rem`,
             cursor: 'move'
           }}
+          draggable={true}
+          onDragStart={dragstart}
+          onDragEnd={dragend}
+          onDragOver={e => e.preventDefault()}
           />
             )
           : (
@@ -113,6 +117,10 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
             color: cur?.color,
             fontWeight: cur?.fontWight ? 'bold' : 'normal'
           }}
+          draggable={true}
+          onDragStart={dragstart}
+          onDragEnd={dragend}
+          onDragOver={e => e.preventDefault()}
           >
             {cur?.text}
           </span>
@@ -143,6 +151,9 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
                     <Form.Item label="文字" name="text" initialValue={cur.text}>
                       <Input onChange={e => setOptions('text', e.target.value)}></Input>
                     </Form.Item>
+                    <Form.Item label="字体加粗" name="fontWeight" initialValue={cur.fontWight} valuePropName="checked">
+                      <Switch onChange={val => setOptions('fontWight', val)}></Switch>
+                    </Form.Item>
                     <Form.Item label="字号" name="fontSize" initialValue={cur.fontSize}
                     help="此处单位为页面单位rem，x100后为实际像素">
                       <InputNumber min={0} step={0.01} onChange={val => setOptions('fontSize', val)}></InputNumber>
@@ -169,7 +180,7 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
                 <Switch onChange={val => setOptions('clickAble', val)}></Switch>
               </Form.Item>
               <Form.Item label="点击后跳转" name="href" initialValue={cur?.href}>
-                <Input></Input>
+                <Input onChange={e => setOptions('href', e.target.value)}></Input>
               </Form.Item>
               <Form.Item label="移入放大" name="hoverScale" initialValue={cur?.hoverScale} valuePropName="checked">
                 <Switch onChange={val => setOptions('hoverScale', val)}></Switch>

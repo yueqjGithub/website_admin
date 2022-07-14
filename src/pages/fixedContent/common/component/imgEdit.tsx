@@ -31,6 +31,7 @@ const ImgEdit = (props: Props) => {
     const fm = new FormData()
     fm.append('file', file)
     fm.append('siteId', currentGame)
+    fm.append('fast', '1')
     setLoading(true)
     try {
       const { data: res } = await httpApi({

@@ -1,5 +1,6 @@
 export class BannerItem {
-  bgImg?: string
+  id?: string
+  imgUrl?: string
   minHeight: string = '100vh'
   type: 1 | 2 = 1
   status: boolean = true
