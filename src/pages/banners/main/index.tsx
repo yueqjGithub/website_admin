@@ -121,6 +121,12 @@ const Main = () => {
                 }
               },
               {
+                title: '设备',
+                dataIndex: 'type',
+                align: 'center',
+                render: val => <span>{val === 1 ? 'PC' : '移动端'}</span>
+              },
+              {
                 dataIndex: 'createTime',
                 title: '创建时间',
                 align: 'center',

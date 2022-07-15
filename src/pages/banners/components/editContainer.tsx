@@ -207,7 +207,7 @@ const EditContainer = ({ target, onClose, editSuc }: Props) => {
           </div>
           <div className={`${styles.toolContainer}`}>
             <div className={styles.label}>banner类型</div>
-            <Radio.Group defaultValue={type} onChange={e => {
+            <Radio.Group value={type} onChange={e => {
               if (e.target.value === 1) {
                 setDeviceType('all')
               }
