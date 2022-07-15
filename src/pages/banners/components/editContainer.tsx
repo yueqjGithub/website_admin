@@ -37,7 +37,7 @@ const EditContainer = ({ target, onClose, editSuc }: Props) => {
   useEffect(() => {
     if (bgUrl) {
       const cImg = document.createElement('img')
-      cImg.style.width = `${type === 1 ? document.documentElement.clientWidth : 414}px`
+      cImg.style.width = `${type === 1 ? document.body.clientWidth : 414}px`
       setLoading(true)
       cImg.onload = () => {
         setLoading(false)
