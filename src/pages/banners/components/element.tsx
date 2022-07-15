@@ -197,7 +197,7 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
                     w = ref.current.offsetWidth
                   }
                   const val = (50 - (w / 2 / viewWidth!) * 100).toFixed(2)
-                  setOptions('left', val)
+                  setOptions('left', parseFloat(val))
                 }}>横向居中</Button>
               </div>
               <div className="full-width flex-row flex-jst-start flex-ali-center">
@@ -212,7 +212,7 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
                     h = ref.current.offsetHeight
                   }
                   const val = (50 - (h / 2 / viewHeight!) * 100).toFixed(2)
-                  setOptions('top', val)
+                  setOptions('top', parseFloat(val))
                 }}>纵向居中</Button>
               </div>
               <Form.Item label="可点击" name="clickAble" initialValue={cur?.clickAble} valuePropName="checked">
