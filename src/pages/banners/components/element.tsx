@@ -1,5 +1,5 @@
-import { Form, Input, InputNumber, message, Radio, Switch } from 'antd'
-import React, { useEffect, useState } from 'react'
+import { Button, Form, Input, InputNumber, message, Radio, Switch } from 'antd'
+import React, { useEffect, useRef, useState } from 'react'
 import { BannerElement } from '../common'
 import { SketchPicker } from 'react-color'
 import styles from '../common/style.module.scss'
@@ -22,6 +22,7 @@ type Positions = {
 const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isPre, editType }: Props) => {
   const [cur, setCur] = useState<BannerElement<'image' | 'text'>>()
   const [form] = Form.useForm<BannerElement<'image' | 'text'>>()
+  const ref = useRef<any>()
   const [savePosition, setSavePosition] = useState<Positions>({ x: 0, y: 0 })
   useEffect(() => {
     setCur(target)
@@ -99,6 +100,7 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
           <img
           src={cur.src}
           alt={cur.src}
+          ref={ref}
           style={{
             width: `${cur.width}rem`,
             height: `${cur.height}rem`,
@@ -112,6 +114,7 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
             )
           : (
           <span
+          ref={ref}
           style={{
             cursor: 'move',
             fontSize: `${cur?.fontSize}rem`,
@@ -182,12 +185,36 @@ const Element = ({ target, viewHeight, viewWidth, idx, onDelete, submitData, isP
                   </>
                 )
               }
-              <Form.Item label="横坐标" name="left" initialValue={cur?.left}>
-                <InputNumber min={0} max={100} step={1} onChange={val => setOptions('left', val)}></InputNumber>
-              </Form.Item>
-              <Form.Item label="纵坐标" name="top" initialValue={cur?.left}>
-                <InputNumber min={0} max={100} step={1} onChange={val => setOptions('top', val)}></InputNumber>
-              </Form.Item>
+              <div className='full-width flex-row flex-jst-start flex-ali-center'>
+                <Form.Item label="横坐标" name="left" initialValue={cur?.left}>
+                  <InputNumber min={0} max={100} step={1} onChange={val => setOptions('left', val)}></InputNumber>
+                </Form.Item>
+                <Button className="ma-lf-05" style={{ marginTop: 6 }} type="primary" size="small" onClick={() => {
+                  let w = 0
+                  if (cur?.type === 'image') {
+                    w = cur.width! * 100
+                  } else {
+                    w = ref.current.offsetWidth
+                  }
+                  const val = (50 - (w / 2 / viewWidth!) * 100).toFixed(2)
+                  setOptions('left', val)
+                }}>横向居中</Button>
+              </div>
+              <div className="full-width flex-row flex-jst-start flex-ali-center">
+                <Form.Item label="纵坐标" name="top" initialValue={cur?.left}>
+                  <InputNumber min={0} max={100} step={1} onChange={val => setOptions('top', val)}></InputNumber>
+                </Form.Item>
+                <Button className="ma-lf-05" style={{ marginTop: 6 }} size="small" type="primary" onClick={() => {
+                  let h = 0
+                  if (cur?.type === 'image') {
+                    h = cur.height! * 100
+                  } else {
+                    h = ref.current.offsetHeight
+                  }
+                  const val = (50 - (h / 2 / viewHeight!) * 100).toFixed(2)
+                  setOptions('top', val)
+                }}>纵向居中</Button>
+              </div>
               <Form.Item label="可点击" name="clickAble" initialValue={cur?.clickAble} valuePropName="checked">
                 <Switch onChange={val => setOptions('clickAble', val)}></Switch>
               </Form.Item>
