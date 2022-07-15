@@ -37,12 +37,12 @@ const EditContainer = ({ target, onClose, editSuc }: Props) => {
   useEffect(() => {
     if (bgUrl) {
       const cImg = document.createElement('img')
-      cImg.style.width = `${type === 1 ? document.body.clientWidth : 414}px`
+      cImg.style.width = `${type === 1 ? document.documentElement.clientWidth : 414}px`
       setLoading(true)
       cImg.onload = () => {
         setLoading(false)
-        const w = type === 1 ? cImg.width : 414
-        const h = type === 1 ? cImg.height : (414 / cImg.width) * cImg.height
+        const w = type === 1 ? (cImg.height > document.documentElement.clientHeight ? (document.documentElement.clientWidth - 8) : document.documentElement.clientWidth) : 414
+        const h = type === 1 ? (cImg.height > document.documentElement.clientHeight ? (w / document.documentElement.clientWidth * cImg.height) : cImg.height) : (414 / cImg.width) * cImg.height
         setViewHeight(h)
         setViewWidth(w)
       }
