@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react'
-import { Button, Layout, Menu, MenuTheme } from 'antd'
+import { Button, Layout, Menu } from 'antd'
 import styles from './layout.module.scss'
 import CusMenu from '../components/menu'
 import { State } from '../store/state'
@@ -17,7 +17,7 @@ type Props = {
 }
 
 const MainLayout = (props: Props) => {
-  const menuTheme = import.meta.env.VITE_MENUTHEME as MenuTheme
+  const menuTheme = 'dark'
   const { children, state, dispatch, isDependRoute } = props
   const [collapsed, setColl] = React.useState(false)
   const history = useHistory()
