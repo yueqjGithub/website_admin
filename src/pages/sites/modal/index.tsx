@@ -1,4 +1,4 @@
-import { Button, Form, Input, message, Select } from 'antd'
+import { Button, Form, Input, message, Radio, Select } from 'antd'
 import { getApiDataState } from 'avalon-iam-util-client'
 import React, { useEffect, useState } from 'react'
 import { httpApi } from '../../../service/axios'
@@ -76,6 +76,12 @@ const EditModal = ({ target, state, editSuccess }: Props) => {
                 langList.map(item => <Select.Option key={item.code} value={item.code}>{item.name}</Select.Option>)
               }
             </Select>
+          </Form.Item>
+          <Form.Item label='发布模式' name='needExcute' help='静态发布相较于动态更新，服务更加稳定可靠'>
+            <Radio.Group>
+              <Radio value={true}>静态发布</Radio>
+              <Radio value={false}>动态更新</Radio>
+            </Radio.Group>
           </Form.Item>
           <Form.Item label='工程路径' name='proPath' rules={[{ required: true, message: '请设置工程路径' }]} help={'前端工程构建静态页面的工程路径'}>
             <Input></Input>

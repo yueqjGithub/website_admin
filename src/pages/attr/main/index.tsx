@@ -1,4 +1,4 @@
-import { Button, message, Modal, Popconfirm, Table } from 'antd'
+import { Button, message, Modal, Popconfirm, Switch, Table } from 'antd'
 import { getApiDataState } from 'avalon-iam-util-client'
 import React, { useEffect, useState } from 'react'
 import InnerStatusPage from '../../../components/innerStatusPage'
@@ -7,25 +7,25 @@ import { CancelPayload, httpApi, httpWithStore } from '../../../service/axios'
 import { ApiIdForSDK } from '../../../service/urls'
 import { State } from '../../../store/state'
 import { hasPermission } from '../../../utils/utils'
-import { FixedContentType } from '../common'
-import EditModal from '../modal'
+import { AttrDataRow } from '../common'
 import dayjs from 'dayjs'
+import EditModal from '../modal'
 type Props = {
   state: State
   dispatch: any
 }
-const apiId: ApiIdForSDK = 'getfixedcontent'
+const apiId: ApiIdForSDK = 'siteattr'
 const Main = ({ state, dispatch }: Props) => {
   const { currentGame } = state
   const [loadStatus, setStatus] = useState<'empty' | 'resolve' | 'reject'>('empty')
   const [loading, setLoading] = useState(false)
-  const [target, setTarget] = useState<FixedContentType>()
-  const { data = [] } = getApiDataState<FixedContentType[]>({ apiId, state })
+  const [target, setTarget] = useState<AttrDataRow<boolean | string>>()
+  const { data = [] } = getApiDataState<AttrDataRow<boolean | string>[]>({ apiId, state })
   const [showModal, setShowModal] = useState(false)
   const permissionList = {
-    a: hasPermission({ state, moduleName: '固定内容管理', action: '新增' }),
-    u: hasPermission({ state, moduleName: '固定内容管理', action: '更新' }),
-    d: hasPermission({ state, moduleName: '固定内容管理', action: '删除' })
+    a: hasPermission({ state, moduleName: '站点属性', action: '新增' }),
+    u: hasPermission({ state, moduleName: '站点属性', action: '更新' }),
+    d: hasPermission({ state, moduleName: '站点属性', action: '删除' })
   }
   const requestHandler = async (cancel?: CancelPayload, force?: boolean) => {
     const requestData = {
@@ -36,6 +36,7 @@ const Main = ({ state, dispatch }: Props) => {
       await httpWithStore({
         apiId,
         state,
+        targetId: currentGame,
         dispatch,
         force,
         data: requestData
@@ -63,7 +64,7 @@ const Main = ({ state, dispatch }: Props) => {
     await requestHandler(undefined, true)
     setShowModal(false)
   }
-  const deleteHandler = async (record: FixedContentType) => {
+  const deleteHandler = async (record: AttrDataRow<boolean | string>) => {
     try {
       const { data: res } = await httpApi({
         apiId,
@@ -104,15 +105,27 @@ const Main = ({ state, dispatch }: Props) => {
         loading={loading}
         loadFunc={() => requestHandler(undefined, true)}
       >
-        <Table
+        <Table<AttrDataRow<string | boolean>>
           dataSource={data}
           pagination={{
-            pageSize: 10
+            pageSize: 6
           }}
           rowKey='id'
           columns={[
-            { title: '名称', dataIndex: 'name' },
-            { title: '标识', dataIndex: 'fixedId' },
+            { title: 'CODE', dataIndex: 'code' },
+            { title: '描述', dataIndex: 'desc' },
+            { title: '是否为开关', dataIndex: 'isBoolean', render: val => val ? '是' : '否' },
+            {
+              title: '值',
+              dataIndex: 'val',
+              render: (val, record) => {
+                if (record.isBoolean) {
+                  return <Switch checked={val === 'true'} disabled></Switch>
+                } else {
+                  return <span>{val}</span>
+                }
+              }
+            },
             {
               title: '创建时间',
               dataIndex: 'createTime',
@@ -151,7 +164,7 @@ const Main = ({ state, dispatch }: Props) => {
         ></Table>
       </InnerStatusPage>
       <Modal title="编辑" visible={showModal} footer={false} onCancel={() => setShowModal(false)} destroyOnClose maskClosable={false} width='90vw'>
-        <EditModal target={target} state={state} eidtSuccess={eidtSuccess}/>
+        <EditModal target={target} state={state} editSuccess={eidtSuccess}/>
       </Modal>
     </div>
   )

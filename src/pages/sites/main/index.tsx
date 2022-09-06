@@ -119,6 +119,34 @@ const Main = ({ state, dispatch }: Props) => {
       history.push(to || '/404')
     }
   }
+  // 发布站点
+  const publicSite = async (record: Site) => {
+    try {
+      setLoading(true)
+      const { data: res } = await httpApi({
+        targetId: record.id,
+        apiId: 'publicsite',
+        state,
+        method: 'GET',
+        httpCustomConfig: {
+          timeout: 180000,
+          headers: {
+            actionName: encodeURIComponent('发布')
+          }
+        }
+      }).request
+      if (res.status === 0) {
+        message.success('正在发布，请稍后')
+        requestHandler()
+      } else {
+        message.error(res.message)
+      }
+    } catch (e) {
+      message.error((e as Error).message)
+    } finally {
+      setLoading(false)
+    }
+  }
   return (
     <div className='full-width'>
       <div className='full-width flex-row flex-jst-start flex-ali-center pa-col-sm'>
@@ -146,6 +174,7 @@ const Main = ({ state, dispatch }: Props) => {
             { title: '名称', dataIndex: 'siteName' },
             { title: '语言', dataIndex: 'language' },
             { title: '创建时间', dataIndex: 'createTime', render: val => <span>{dayjs(val).format('YYYY-MM-DD HH:mm:ss')}</span> },
+            { title: '站点发布模式', dataIndex: 'needExcute', render: val => <span>{val ? '静态发布' : '动态更新'}</span> },
             {
               title: '操作',
               render: record => {
@@ -179,9 +208,17 @@ const Main = ({ state, dispatch }: Props) => {
               title: '',
               render: record => {
                 return (
-                  <Button type='text' onClick={() => chooseEffect(record)}>
-                    <span className='text-primary'>进入应用 &gt;&gt;</span>
-                  </Button>
+                  <div className='flex-row full-width flex-jst-start flex-ali-center'>
+                    <Button type='text' onClick={() => chooseEffect(record)}>
+                      <span className='text-primary'>进入应用 &gt;&gt;</span>
+                    </Button>
+                    <PermissionHoc
+                      permission={permissionList.u && record.needExcute}
+                      component={
+                        <Button type='primary' className='ma-lf-05' size='small' disabled={record.publicIng} onClick={() => publicSite(record)}>发布</Button>
+                      }
+                    ></PermissionHoc>
+                  </div>
                 )
               }
             }

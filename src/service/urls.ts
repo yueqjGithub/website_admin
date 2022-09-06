@@ -17,6 +17,8 @@ export type ApiIdForSDK =
 | 'addbanner'
 | 'updatebanner'
 | 'delbanner'
+| 'publicsite'
+| 'siteattr'
 /** 通用api */
 export const apisForSDK: Apis<ApiIdForSDK> = [
   {
@@ -114,6 +116,26 @@ export const apisForSDK: Apis<ApiIdForSDK> = [
     id: 'delbanner',
     url: '/cat_website/admin/banners',
     name: '删除',
+    allowEmpty: true,
+    urlTranform: ({ url, state }) => {
+      const apiUrl = getApiUrl({ state })
+      return `${apiUrl}${url}`
+    }
+  },
+  {
+    id: 'publicsite',
+    url: '/cat_website/admin/sites/public',
+    name: '发布站点',
+    allowEmpty: true,
+    urlTranform: ({ url, state }) => {
+      const apiUrl = getApiUrl({ state })
+      return `${apiUrl}${url}`
+    }
+  },
+  {
+    id: 'siteattr',
+    url: '/cat_website/admin/siteAttr',
+    name: '属性列表',
     allowEmpty: true,
     urlTranform: ({ url, state }) => {
       const apiUrl = getApiUrl({ state })

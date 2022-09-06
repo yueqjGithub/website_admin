@@ -14,4 +14,8 @@ export class Site {
     url!: string
 
     createTime?: string
+
+    needExcute: boolean = false
+
+    hasUpdate: boolean = false
 }

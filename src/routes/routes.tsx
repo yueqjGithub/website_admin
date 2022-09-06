@@ -69,6 +69,15 @@ export const routeConfig:RouteSingle[] = [
         component: lazy(() => import('../pages/fixedContent')),
         parent: '/content',
         dependGame: true
+      },
+      {
+        path: '/attr',
+        menuName: '站点属性',
+        isMenu: true,
+        auth: true,
+        component: lazy(() => import('../pages/attr')),
+        parent: '/content',
+        dependGame: true
       }
       // {
       //   path: '/packhistory',
